@@ -1,4 +1,4 @@
-package com.algaworks.algafoodapi.domain.model;
+package com.algaworks.algafood.domain.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
