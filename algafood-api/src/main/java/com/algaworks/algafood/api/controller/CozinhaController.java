@@ -7,7 +7,6 @@ import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.service.CadastroCozinhaService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +37,6 @@ public class CozinhaController {
             //return ResponseEntity.ok(cozinha); ~ este linha faz a mesma coisa que a linha de baixo
             return ResponseEntity.status(HttpStatus.OK).body(cozinha);
         }
-        //return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
@@ -55,7 +53,7 @@ public class CozinhaController {
         if (cozinhaAtual != null) {
             //cozinhaAtual.setNome(cozinha.getNome()); ~ se tivesse varias propriedades seria necessario setar cada uma
             BeanUtils.copyProperties(cozinha, cozinhaAtual, "id"); // O terceiro parametro "id" especifica propriedade a ser ignorada
-            cozinhaAtual = cozinhaRepository.salvar(cozinhaAtual);
+            cozinhaAtual = cadastroCozinhaService.salvar(cozinhaAtual);
             return ResponseEntity.ok(cozinhaAtual);
         }
         return ResponseEntity.notFound().build();
