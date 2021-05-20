@@ -1,5 +1,6 @@
 package com.algaworks.algafood.domain.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -10,7 +11,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-public class Permissao {
+public class Grupo {
 
     @Id
     @EqualsAndHashCode.Include
@@ -20,9 +21,10 @@ public class Permissao {
     @Column(nullable = false)
     private String nome;
 
-    @Column(nullable = false)
-    private String descricao;
-
-//    @ManyToMany
-//    private List<Grupo> grupos = new ArrayList<>();
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(name = "grupo_permissao",
+            joinColumns = @JoinColumn(name = "grupo_id"),
+            inverseJoinColumns = @JoinColumn(name = "permissao_id"))
+    private List<Permissao> permissoes = new ArrayList<>();
 }

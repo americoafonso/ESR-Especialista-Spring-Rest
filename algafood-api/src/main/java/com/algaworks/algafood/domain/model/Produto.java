@@ -4,13 +4,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
 
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-public class Permissao {
+public class Produto {
 
     @Id
     @EqualsAndHashCode.Include
@@ -20,9 +19,15 @@ public class Permissao {
     @Column(nullable = false)
     private String nome;
 
-    @Column(nullable = false)
     private String descricao;
 
-//    @ManyToMany
-//    private List<Grupo> grupos = new ArrayList<>();
+    @Column(nullable = false)
+    private BigDecimal preco;
+
+    private Boolean ativo;
+
+    @ManyToOne
+    @JoinColumn(name = "restaurante_id")
+    private Restaurante restaurante;
+
 }

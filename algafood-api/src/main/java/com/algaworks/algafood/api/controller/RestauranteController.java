@@ -42,10 +42,12 @@ public class RestauranteController {
     public ResponseEntity<Restaurante> buscar(@PathVariable("restauranteId") Long id) {
         Optional<Restaurante> restaurante = restauranteRepository.findById(id);
 
-        if (restaurante.isPresent()) {
-            return ResponseEntity.ok(restaurante.get());
-        }
-        return ResponseEntity.notFound().build();
+        return restaurante.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build()); // ~> esta linha faz a mesma coisa que a validacao a baixo.
+
+//        if (restaurante.isPresent()) {
+//            return ResponseEntity.ok(restaurante.get());
+//        }
+//        return ResponseEntity.notFound().build();
     }
 
     @PostMapping
@@ -63,11 +65,11 @@ public class RestauranteController {
     @PutMapping("/{restauranteId}")
     public ResponseEntity<?> atualizar(@PathVariable("restauranteId") Long id, @RequestBody Restaurante restaurante) {
         try {
-            Optional<Restaurante> restauranteAtual = restauranteRepository.findById(id);
+            Restaurante restauranteAtual = restauranteRepository.findById(id).orElse(null);
 
-            if (restauranteAtual.isPresent()) {
-                BeanUtils.copyProperties(restaurante, restauranteAtual.get(), "id");
-                Restaurante restauranteSalvo = cadastroRestauranteService.salvar(restauranteAtual.get());
+            if (restauranteAtual != null) {
+                BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
+                Restaurante restauranteSalvo = cadastroRestauranteService.salvar(restauranteAtual);
                 return ResponseEntity.ok(restauranteSalvo);
             }
             return ResponseEntity.notFound().build();
