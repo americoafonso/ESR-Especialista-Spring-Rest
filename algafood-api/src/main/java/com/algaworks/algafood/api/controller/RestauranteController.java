@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/restaurantes")
@@ -31,66 +30,93 @@ public class RestauranteController {
     @Autowired
     private CadastroRestauranteService cadastroRestauranteService;
 
-
-
     @GetMapping
     public List<Restaurante> listar() {
         return restauranteRepository.findAll();
     }
 
     @GetMapping("/{restauranteId}")
-    public ResponseEntity<Restaurante> buscar(@PathVariable("restauranteId") Long id) {
-        Optional<Restaurante> restaurante = restauranteRepository.findById(id);
+    public Restaurante buscar(@PathVariable("restauranteId") Long id) {
+        return cadastroRestauranteService.buscarOuFalhar(id);
+    }
 
-        return restaurante.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build()); // ~> esta linha faz a mesma coisa que a validacao a baixo.
-
+//    @GetMapping("/{restauranteId}")
+//    public ResponseEntity<Restaurante> buscar(@PathVariable("restauranteId") Long id) {
+//        Optional<Restaurante> restaurante = restauranteRepository.findById(id);
+//
+//        return restaurante.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build()); // ~> esta linha faz a mesma coisa que a validacao a baixo.
+//
 //        if (restaurante.isPresent()) {
 //            return ResponseEntity.ok(restaurante.get());
 //        }
 //        return ResponseEntity.notFound().build();
-    }
+//    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> adicionar(@RequestBody Restaurante restaurante) {
-        try {
-            restaurante = cadastroRestauranteService.salvar(restaurante);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(restaurante);
-        } catch (EntidadeNaoEncontradaException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public Restaurante adicionar(@RequestBody Restaurante restaurante) {
+        return cadastroRestauranteService.salvar(restaurante);
     }
+
+//    @PostMapping
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public ResponseEntity<?> adicionar(@RequestBody Restaurante restaurante) {
+//        try {
+//            restaurante = cadastroRestauranteService.salvar(restaurante);
+//
+//            return ResponseEntity.status(HttpStatus.CREATED).body(restaurante);
+//        } catch (EntidadeNaoEncontradaException e) {
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//        }
+//    }
 
     @PutMapping("/{restauranteId}")
-    public ResponseEntity<?> atualizar(@PathVariable("restauranteId") Long id, @RequestBody Restaurante restaurante) {
-        try {
-            Restaurante restauranteAtual = restauranteRepository.findById(id).orElse(null);
+    public Restaurante atualizar(@PathVariable Long id, @RequestBody Restaurante restaurante) {
+        Restaurante restauranteAtual = cadastroRestauranteService.buscarOuFalhar(id);
 
-            if (restauranteAtual != null) {
-                BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
-                Restaurante restauranteSalvo = cadastroRestauranteService.salvar(restauranteAtual);
-                return ResponseEntity.ok(restauranteSalvo);
-            }
-            return ResponseEntity.notFound().build();
+        BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
 
-        } catch (EntidadeNaoEncontradaException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-
+        return cadastroRestauranteService.salvar(restauranteAtual);
     }
+
+//    @PutMapping("/{restauranteId}")
+//    public ResponseEntity<?> atualizar(@PathVariable("restauranteId") Long id, @RequestBody Restaurante restaurante) {
+//        try {
+//            Restaurante restauranteAtual = restauranteRepository.findById(id).orElse(null);
+//
+//            if (restauranteAtual != null) {
+//                BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
+//                Restaurante restauranteSalvo = cadastroRestauranteService.salvar(restauranteAtual);
+//                return ResponseEntity.ok(restauranteSalvo);
+//            }
+//            return ResponseEntity.notFound().build();
+//
+//        } catch (EntidadeNaoEncontradaException e) {
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//        }
+//
+//    }
 
     @PatchMapping("/{restauranteId}")
-    public ResponseEntity<?> atualizaParcial(@PathVariable("restauranteId") Long restauranteId, @RequestBody Map<String, Object> campos) {
-        Restaurante restauranteAtual = restauranteRepository.findById(restauranteId).orElse(null);
+    public Restaurante atualizarParcial(@PathVariable("restauranteId") Long id, @RequestBody Map<String, Object> campos) {
+         Restaurante restauranteAtual = cadastroRestauranteService.buscarOuFalhar(id);
 
-        if (restauranteAtual == null) {
-            return ResponseEntity.notFound().build();
-        }
-        merge(campos, restauranteAtual);
+         merge(campos, restauranteAtual);
 
-        return atualizar(restauranteId, restauranteAtual);
+         return atualizar(id, restauranteAtual);
     }
+
+//    @PatchMapping("/{restauranteId}")
+//    public ResponseEntity<?> atualizaParcial(@PathVariable("restauranteId") Long restauranteId, @RequestBody Map<String, Object> campos) {
+//        Restaurante restauranteAtual = restauranteRepository.findById(restauranteId).orElse(null);
+//
+//        if (restauranteAtual == null) {
+//            return ResponseEntity.notFound().build();
+//        }
+//        merge(campos, restauranteAtual);
+//
+//        return atualizar(restauranteId, restauranteAtual);
+//    }
 
     private void merge(Map<String, Object> dadosOrigem, Restaurante restauranteDestino) {
         ObjectMapper objectMapper = new ObjectMapper();
