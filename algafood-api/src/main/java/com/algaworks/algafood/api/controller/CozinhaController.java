@@ -76,8 +76,6 @@ public class CozinhaController {
         cadastroCozinhaService.excluir(cozinhaId);
     }
 
-
-
     /**
      * Este metodo funciona mas nao sera preciso pois criei uma camada responsavel de exception
      * que e lancada pelo service
