@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL) //~> Propriedades com valores null nao estarao no corpo da resposta.
 @Data
@@ -12,10 +13,17 @@ import java.time.LocalDateTime;
 public class Problem {
 
     private Integer Status;
+    private LocalDateTime timestamp;
     private String type;
     private String title;
     private String detail;
-
     private String userMessage;
-    private LocalDateTime timestamp;
+    private List<Field> fields;
+
+    @Data
+    @Builder
+    public static class Field {
+        private String name;
+        private String userMessage;
+    }
 }
