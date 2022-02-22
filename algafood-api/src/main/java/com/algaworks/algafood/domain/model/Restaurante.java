@@ -41,6 +41,7 @@ public class Restaurante {
 
     @Valid // Valida as propriedades de cozinha
     @ConvertGroup(from = Default.class, to = Groups.CozinhaId.class)
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "cozinha_id", nullable = false)
     private Cozinha cozinha;
