@@ -1,5 +1,7 @@
 package com.algaworks.algafood;
 
+import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
+import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.service.CadastroCozinhaService;
 import org.hibernate.exception.ConstraintViolationException;
@@ -45,5 +47,24 @@ public class CadastroCozinhaIntegrationTests {
 
         assertThat(erroEsperado).isNotNull();
     }
+
+    @Test
+    public void deveFalhar_QuandoExcluirCoizinhaEmUso() {
+        EntidadeEmUsoException erroEsperado =
+                Assertions.assertThrows(EntidadeEmUsoException.class, () -> {
+                   cadastroCozinha.excluir(1L);
+                });
+    }
+
+    @Test
+    public void deveFalhar_QuandoExcluirCozinhaInexistente() {
+        EntidadeNaoEncontradaException erroEsperado =
+                Assertions.assertThrows(EntidadeNaoEncontradaException.class, () -> {
+                   cadastroCozinha.excluir(100L);
+                });
+    }
+
+
+
 
 }
