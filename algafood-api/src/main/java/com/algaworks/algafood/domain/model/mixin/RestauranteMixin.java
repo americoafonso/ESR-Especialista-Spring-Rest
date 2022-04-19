@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RestauranteMixin {
+public abstract class RestauranteMixin {
 
     @JsonIgnoreProperties(value = "nome", allowGetters = true) //~> se fosse mas campos seria: value= {"var1", "var2"}, allowGetters = true nao ignora a propriedade no getter(na serielizacao)
     private Cozinha cozinha;
@@ -35,8 +35,8 @@ public class RestauranteMixin {
 
     // Este mapeamento tambem poderia ser feito na entidade FormaPapgamento daria no mesmo.
     @JsonIgnore
-    private List<FormaPagamento> formasPagamento = new ArrayList<>();
+    private List<FormaPagamento> formasPagamento;
 
     @JsonIgnore
-    private List<Produto> produtos = new ArrayList<>();
+    private List<Produto> produtos;
 }
