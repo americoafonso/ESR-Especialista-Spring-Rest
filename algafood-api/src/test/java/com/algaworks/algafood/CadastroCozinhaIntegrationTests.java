@@ -49,11 +49,13 @@ public class CadastroCozinhaIntegrationTests {
     }
 
     @Test
-    public void deveFalhar_QuandoExcluirCoizinhaEmUso() {
+    public void deveFalhar_QuandoExcluirCozinhaEmUso() {
         EntidadeEmUsoException erroEsperado =
                 Assertions.assertThrows(EntidadeEmUsoException.class, () -> {
-                   cadastroCozinha.excluir(1L);
+                    cadastroCozinha.excluir(1L);
                 });
+
+        assertThat(erroEsperado).isNotNull();
     }
 
     @Test
