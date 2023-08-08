@@ -1,4 +1,4 @@
-package com.algaworks.algafood;
+package com.algaworks.algafood.ServiceTest;
 
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class CadastroCozinhaIntegrationTests {
+public class CadastroCozinhaServiceTest {
 
     @Autowired
     private CadastroCozinhaService cadastroCozinha;
@@ -65,8 +65,6 @@ public class CadastroCozinhaIntegrationTests {
                    cadastroCozinha.excluir(100L);
                 });
     }
-
-
 
 
 }
